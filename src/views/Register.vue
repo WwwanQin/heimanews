@@ -1,8 +1,8 @@
 <template>
   <div>
-      <div class="loginPage">
+    <div class="register">
         <div class="logout">
-            <span class="iconfont iconicon-test"></span>
+            <span class="iconfont iconjiantou" @click="back"></span>
         </div>
         <div class="logo">
             <span class="iconfont iconnew"></span>
@@ -10,16 +10,16 @@
         <div class="loginLabel">
             <form action="JavaScript:;">
                 <div class="username">
-                    <input type="text" placeholder="用户名 / 手机号码" name="username" v-model="user.username" ref="login">
+                    <input type="text" placeholder="用户名 / 手机号码" name="username" v-model="user.username" ref="register">
                 </div>
                 <div class="password">
                     <input type="text" placeholder="密码" name="password" v-model="user.password">
                 </div>
-                <div class="submit">
-                    <input type="submit" value="登录" @click="sub">
+                <div class="nickname">
+                    <input type="text" placeholder="昵称" name="nickname" v-model="user.nickname">
                 </div>
                 <div class="register">
-                    <input type="register" value="注册" @click="register">
+                    <input type="submit" value="注册" @click="register">
                 </div>
             </form>
         </div>
@@ -33,32 +33,32 @@ export default {
         return {
             user:{
                 username:'',
-                password:''
+                password:'',
+                nickname:''
             }
         }
     },
     methods:{
-        sub(e){
-            e.preventDefault();
+        register(){
             console.log(this.user);
         },
-        register(e){
-            this.$router.push('/register');
+        back(){
+            this.$router.back();
         }
     },
     mounted(){
-        this.$refs.login.focus()
+        this.$refs.register.focus();
     }
 }
 </script>
 
 <style lang="less" scoped>
-    .loginPage{
+    .register{
         display: flex;
         flex-direction: column;
         padding: .4rem;
         .logout{
-            .iconicon-test{
+            .iconjiantou{
                 font-size: .666667rem;
                 color: darkred;
                 font-weight: 700;
@@ -75,7 +75,9 @@ export default {
             }
         }
         .loginLabel{
-            .username,.password{
+            .username,
+            .password,
+            .nickname{
                 input{
                     height: 1.066667rem;
                     width: 100%;
@@ -88,7 +90,6 @@ export default {
                     box-sizing: border-box;
                 }
             }
-            .submit,
             .register{
                 height: 2.3rem;
                 display: flex;
@@ -107,9 +108,6 @@ export default {
                     margin: 0 auto;
                     text-align: center;
                 }
-            }
-            .register{
-                align-items: end;
             }
         }
     }
