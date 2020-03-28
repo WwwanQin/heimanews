@@ -1,19 +1,15 @@
 <template>
-    <div class="toplabel" @click="myclick">
+    <div class="toplabel">
         <span class="iconfont iconjiantou" @click="$router.back()"></span>
         <strong>{{ centerText }}</strong>
-        <span class="iconfont iconshouye" @click="$router.push('/')"></span>
+        <span class="iconfont iconshouye" @click="$router.push('/')" v-if="showIcon == 0 "></span>
+        <span class="iconfont iconshouye" @click="$router.push('/')" v-if="showIcon == 1 " style="opacity: 0;"></span>
     </div>
 </template>
 
 <script>
 export default {
-    props:['centerText'],
-    methods:{
-        myclick(){
-            this.$emit('myclick');
-        }
-    }
+    props:['centerText','showIcon']
 }
 </script>
 

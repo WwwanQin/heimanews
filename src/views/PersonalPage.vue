@@ -1,14 +1,14 @@
 <template>
     <div class="labels">
-        <top centerText="个人中心" @myclick="topclick"></top>
-        <div class="personDetails">
+        <top centerText="个人中心" showIcon="0"></top>
+        <div class="personDetails" @click="$router.push('/editUser')">
             <div>
                 <div class="avatar">
                     <img :src="$axios.defaults.baseURL + user.headImg"/>
                     <div class="usrInfo">
                         <p class="name">
-                            <span class="gender" v-if="user.gender == 1">{{ '♂' }}</span>
-                            <span class="gender" v-if="user.gender == 2">{{ '♀' }}</span>
+                            <span class="gender" v-if="user.gender == 0">{{ '♂' }}</span>
+                            <span class="gender" v-if="user.gender == 1">{{ '♀' }}</span>
                             <span>{{ user.nickname }}</span>
                         </p>
                         <p class="date">{{ moment(user.createDate).format('YYYY-MM-DD') }}</p>
@@ -40,7 +40,7 @@ export default {
     data(){
         return {
             user:{
-                headImg: '',
+                headImg: '/uploads/image/IMG1574778073476.jpeg',
                 id: '',
                 username: '',
                 password: '',
@@ -66,7 +66,7 @@ export default {
                     tips:'',
                     methodName:'handleMethod',
                     fun:()=>{
-                        this.$router.push('/login');
+                        console.log('设置');
                     }
                 },
                 {
@@ -92,9 +92,6 @@ export default {
     methods:{
         logOut(){
             console.log(1);
-        },
-        topclick(){
-            console.log('顶部点击');
         }
     },
     mounted(){
@@ -116,7 +113,6 @@ export default {
             this.user.nickname = userdata.nickname;
             this.user.createDate = userdata.create_date;
             this.user.gender = userdata.gender;
-            this.$toast(result.data.message);
         }).catch(reason => {
             this.$toast('个人主页进入失败');
             this.$router.back();
@@ -128,19 +124,7 @@ export default {
 <style lang="less" scoped>
     .labels{
         margin: 15 / 360 * 100vw;
-        .label-item{
-            display: flex;
-            justify-content: space-between;
-            height: 25/360 * 100vh;
-            border-bottom: 1px solid #ccadad;
-            line-height: 25/360 * 100vh;
-            font-size: 14px;
-            :nth-child(2){
-                color: gray;
-                font-size: 13px;
-                font-family: 微软雅黑;
-            }
-        }
+
         .personDetails{
             height: 60/360 * 100vh;
             display: flex;
@@ -153,8 +137,8 @@ export default {
                     height: 100%;
                     img{
                         border-radius: 50%;
-                        height: 40/360 * 100vh;
-                        width: 73/360 * 100vw;
+                        height: 65/360 * 100vw;
+                        width: 65/360 * 100vw;
                         object-fit: cover;
                     }
                     .usrInfo{
