@@ -70,6 +70,7 @@ export default {
         top
     },
     methods:{
+        // vantui中的文件上传
         afterRead(file){
             const fmData = new FormData();
             fmData.append('file',file.file);
@@ -85,7 +86,7 @@ export default {
                 this.localUser.head_img = result.data.data.url;
                 await this.editUser({head_img: result.data.data.url});
             }).catch(reason => {
-                console.log(reason);
+                this.$toast.fail('文件上传失败');
             })
         },
         stopPagation(event){
@@ -107,7 +108,6 @@ export default {
                     let result = await this.editUser({password: this.password})
                     this.$toast.success(result.data.message + '，请重新登录');
                     this.localUser = result.data.data;
-                    console.log(this.localUser);
                     this.password = '';
                     this.bundlepassword = false;
                     this.showKeyboard=false
@@ -138,8 +138,10 @@ export default {
                     method:'post',
                     data:data
                 }).then(result => {
+                    this.$toast.success('编辑成功');
                     resolve(result);
                 }).catch(reason => {
+                    this.$toast.fail('编辑失败，请稍后重试');
                     reject(reason);
                 })
             })
@@ -153,6 +155,8 @@ export default {
             headers:{
                 Authorization:news.token
             },
+        }).catch(reason => {
+            this.$toast.fail('个人信息获取失败');
         });
         this.localUser = result.data.data;
         this.userJson = news.user;
