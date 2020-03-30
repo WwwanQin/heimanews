@@ -31,8 +31,13 @@ const routes = [
   },
   {
     path: '/follow',
-    name:'follow',
+    name: 'follow',
     component: () => import('@/views/Follow')
+  },
+  {
+    path: '/comments',
+    name: 'comments',
+    component: () => import('@/views/comments')
   }
 ]
 
