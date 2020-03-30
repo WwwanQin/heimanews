@@ -104,6 +104,8 @@ export default {
           :nth-child(2){
             color: gray;
             text-align: left;
+            font-size: 12 / 360 * 100vw;
+            padding-top: 5 / 360 * 100vw;
           }
         }
         .follow-end{
@@ -118,6 +120,7 @@ export default {
             background-color: rgb(224, 224, 224);
             border-radius: 50px;
             text-align: center;
+            font-size: 13px;
           }
         }
       }

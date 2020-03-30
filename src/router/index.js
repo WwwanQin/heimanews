@@ -37,7 +37,12 @@ const routes = [
   {
     path: '/comments',
     name: 'comments',
-    component: () => import('@/views/comments')
+    component: () => import('@/views/Comments')
+  },
+  {
+    path: '/star',
+    name: 'star',
+    component: () => import('@/views/Star')
   }
 ]
 

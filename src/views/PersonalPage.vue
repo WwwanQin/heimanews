@@ -67,7 +67,11 @@ export default {
                 },
                 {
                     label:'我的收藏',
-                    tips:'文章 / 视频'
+                    tips:'文章 / 视频',
+                    methodName: 'handleMethod',
+                    fun: ()=>{
+                        this.$router.push('/star');
+                    }
                 },
                 {
                     label:'设置',
