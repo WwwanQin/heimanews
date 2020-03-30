@@ -52,14 +52,18 @@ export default {
                 {
                     label:'我的关注',
                     tips:'关注的用户',
-                    methodName:'handleMethod',
+                    methodName: 'handleMethod',
                     fun:()=>{
                         this.$router.push('/follow');
                     }
                 },
                 {
                     label:'我的跟帖',
-                    tips:'跟帖 / 回复'
+                    tips:'跟帖 / 回复',
+                    methodName: 'handleMethod',
+                    fun:()=>{
+                        this.$router.push('/comments');
+                    }
                 },
                 {
                     label:'我的收藏',
