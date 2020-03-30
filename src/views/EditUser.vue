@@ -3,7 +3,7 @@
     <top centerText="编辑资料" showIcon="1"></top>
     <div class="uploadImg">
         <img :src="$axios.defaults.baseURL + localUser.head_img"/>
-        <van-uploader :after-read="afterRead" />
+        <van-uploader :after-read="afterRead" :deletable ="uploadCheck"/>
     </div>
 
     <!-- 昵称修改 -->
@@ -40,6 +40,7 @@
     <!-- 性别修改 -->
     <labelItem label='性别' :tips="['男','女'][localUser.gender]" @click.native="bundlegender = true"></labelItem>
     <van-action-sheet 
+    close-on-click-action
     v-model="bundlegender" 
     :actions="actions" 
     @select="onSelect" />
@@ -52,6 +53,7 @@ import top from '@/components/top'
 export default {
     data(){
         return {
+            uploadCheck:true,
             localUser:{},
             userJson:{},
             showKeyboard: false,

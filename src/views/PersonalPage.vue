@@ -51,7 +51,11 @@ export default {
             labels:[
                 {
                     label:'我的关注',
-                    tips:'关注的用户'
+                    tips:'关注的用户',
+                    methodName:'handleMethod',
+                    fun:()=>{
+                        this.$router.push('/follow');
+                    }
                 },
                 {
                     label:'我的跟帖',
@@ -95,6 +99,8 @@ export default {
         }
     },
     mounted(){
+        // 将个人信息修改通用方法放入全局
+        window.editUser = this.editUser;
         const newsUserData = JSON.parse(localStorage.getItem('news_User_Data'));
         this.user.id = newsUserData.user.id;
         let id = this.user.id

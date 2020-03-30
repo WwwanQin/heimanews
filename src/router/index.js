@@ -28,6 +28,11 @@ const routes = [
     path: '/editUser',
     name: 'editUser',
     component: () => import('@/views/EditUser')
+  },
+  {
+    path: '/follow',
+    name:'follow',
+    component: () => import('@/views/Follow')
   }
 ]
 
@@ -39,6 +44,7 @@ const router = new VueRouter({
 // 设置路由守卫
 router.beforeEach((to,from,next)=>{
   const arr = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+  console.log(to.name);
   if(to.name == 'personalPage'){
     if(arr.token){
       next();
