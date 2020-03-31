@@ -62,7 +62,6 @@ export default {
                 this.$toast(result.data.message);
                 this.$router.back();
             }).catch(reason => {
-                this.$toast('注册失败')
                 this.user = {};
             })
         },

@@ -58,10 +58,7 @@ export default {
                 data:this.user
             }).then(result => {
                 localStorage.setItem('news_User_Data',JSON.stringify(result.data.data));
-                // this.$toast(result.status == 200 ? '登录成功' : '登录失败，检查您的用户名或密码');
                 this.$router.push(`/personalPage`)
-            }).catch(reason => {
-                this.$toast('登录失败，请检查您的账号密码')
             })
         },
         register(e){

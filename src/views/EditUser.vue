@@ -3,11 +3,16 @@
     <top centerText="编辑资料" showIcon="1"></top>
     <div class="uploadImg">
         <img :src="$axios.defaults.baseURL + localUser.head_img"/>
-        <van-uploader :after-read="afterRead" :deletable ="uploadCheck"/>
+        <van-uploader 
+        :after-read="afterRead" 
+        :deletable ="uploadCheck"/>
     </div>
 
     <!-- 昵称修改 -->
-    <labelItem label='昵称' :tips="localUser.nickname" @click.native="bundlenickname = true"></labelItem>
+    <labelItem label='昵称' 
+    :tips="localUser.nickname" 
+    @click.native="bundlenickname = true">
+    </labelItem>
     <van-dialog v-model="bundlenickname" title="修改昵称" show-cancel-button @cancel="nickNameCancel" @confirm="nickNameConfrim">
         <van-field
             v-model="userJson.nickname"
