@@ -2,7 +2,9 @@
     <div class="indexLabel">
         <div class="header">
             <div class="header-icon">
-                <span class="iconfont iconnew"></span>
+                <router-link to="/">
+                    <span class="iconfont iconnew"></span>
+                </router-link>
             </div>
             <div class="header-content">
                 <div class="header-search">
@@ -11,7 +13,9 @@
                 </div>
             </div>
             <div class="header-personpage">
-                <span class="iconfont iconwode"></span>
+                <router-link to="/personalPage">
+                    <span class="iconfont iconwode"></span>
+                </router-link>
             </div>
         </div>
         <div class="tabs">
@@ -27,7 +31,23 @@
                                 finished-text="没有更多了"
                                 @load="onLoad"
                             >
-                                <van-cell v-for="item in list" :key="item" :title="item" />
+                                <div v-for="(item,index) in list" :key="index">
+                                    <div v-if="item.cover.length == 1">
+                                        <postItem1
+                                        :title = "item.title"
+                                        :nickname = "item.user.nickname"
+                                        :size = "item.comment_length"
+                                        :url = "$axios.defaults.baseURL + item.cover[0].url"/>
+                                    </div>
+                                    <div v-else>
+                                        <postItem2
+                                        :title = "item.title"
+                                        :nickname = "item.user.nickname"
+                                        :size = "item.comment_length"
+                                        :posters="item.posters"
+                                        />
+                                    </div>
+                                </div>
                             </van-list>
                         </van-pull-refresh>
                     </van-tab>
@@ -42,13 +62,17 @@
     </div>
 </template>
 
-<script>                                                                                                                                                                                                                                               
+<script>
+import postItem1 from '@/components/postItem1'
+import postItem2 from '@/components/postItem2'        
 export default {
     data(){
         return{
             loading: false,
             finished: false,
             refreshing: false,
+            pageIndex:0,
+            pageSize:10,
             list: [],
             active: 0,
             categories: [
@@ -67,25 +91,42 @@ export default {
         }
     },
     methods:{
+        initData(){
+            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data'))
+            this.$axios({
+                url:`/post?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`,
+                method:'get',
+                headers:{
+                    Authorization:token
+                },
+            }).then(res => {
+                let {data:{data}} = res;
+                data.forEach(ele => {
+                    if(ele.cover.length == 3){
+                        ele.posters = ele.cover.map(e => {
+                            return this.$axios.defaults.baseURL + e.url;
+                        }).toString()
+                    }
+                    this.list.push(ele);
+                });
+            })    
+        },
         onLoad() {
-            setTimeout(() => {
-                if (this.refreshing) {
-                    this.list = [];
-                    this.refreshing = false;
-                }
-                for (let i = 0; i < 20; i++) {
-                    this.list.push(this.list.length + 1);
-                }
-                this.loading = false;
-                if (this.list.length >= 40) {
-                    this.finished = true;
-                }
-            }, 1000);
+            if (this.refreshing) {
+                this.list = [];
+                this.refreshing = false;
+            }
+            this.pageIndex ++;
+            this.initData();
+            this.loading = false;
+            if (this.list.length >= 40) {
+                this.finished = true;
+            }
         },
         onRefresh() {
             // 清空列表数据
             this.finished = false;
-
+            this.pageIndex = 0;
             // 重新加载数据
             // 将 loading 设置为 true，表示处于加载状态
             this.loading = true;
@@ -96,6 +137,10 @@ export default {
         active(){
             console.log(1);
         }
+    },
+    components:{
+        postItem1,
+        postItem2
     }
 }
 </script>
@@ -109,14 +154,16 @@ export default {
             justify-content: space-between;
             align-items: center;
             .header-icon{
-                margin: 0 2.16666667vw;
-                display: flex;
-                span{
-                    transform: scale(3);
-                    font-size: 20px;   
-                    color: white;
-                    position: relative;
-                    left: 20 / 360 * 100vw;
+                a{
+                    margin: 0 2.16666667vw;
+                    display: flex;
+                    span{
+                        transform: scale(3);
+                        font-size: 20px;   
+                        color: white;
+                        position: relative;
+                        left: 20 / 360 * 100vw;
+                    }
                 }
             }
             .header-content{
@@ -133,14 +180,16 @@ export default {
                 }
             }
             .header-personpage{
-                display: flex;
-                margin: 0 1.16666667vw;
-                span{
-                    transform: scale(1.3);
-                    font-size: 20px;
-                    position: relative;
-                    right: 20 / 360 * 100vw;
-                    color: white;
+                a{
+                    display: flex;
+                    margin: 0 1.16666667vw;
+                    span{
+                        transform: scale(1.3);
+                        font-size: 20px;
+                        position: relative;
+                        right: 20 / 360 * 100vw;
+                        color: white;
+                    }
                 }
             }
         }

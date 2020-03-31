@@ -62,6 +62,7 @@ export default {
                 text-align: center;
                 img{
                     width: 95%;
+                    max-height: 80 / 360 * 100vw;
                     object-fit: cover;
                 }
             }

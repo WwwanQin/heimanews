@@ -11,19 +11,22 @@
                 :size = "item.comments.length"
                 :url = "$axios.defaults.baseURL + item.cover[0].url"/>
             </div>
-            <div v-else>
-            </div>
         </div>
+        <postItem3 
+        title = "不愧是旗舰之王！100倍变焦+865 史无前例"
+        nickname = "火星时报"
+        size = "52"
+        url = "http://localhost:3000/uploads/image/IMG1574775080376.jpeg"/>
     </div>
 </template>
 
 <script>
 import top from '@/components/top'
 import postItem1 from '@/components/postItem1'
+import postItem3 from '@/components/postItem3'
 export default {
     data(){
         return {
-            cover:"http://localhost:3000/uploads/image/IMG1574774561941.png,http://localhost:3000/uploads/image/IMG1574774561941.png,http://localhost:3000/uploads/image/IMG1574774561941.png",
             stars:[]
         }
     },
@@ -44,7 +47,8 @@ export default {
     },
     components:{
         top,
-        postItem1
+        postItem1,
+        postItem3
     },
     mounted(){
         this.initData();

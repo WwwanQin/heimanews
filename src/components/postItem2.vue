@@ -1,29 +1,29 @@
 <template>
-<div class="star-card">
-    <div class="star-top">
-        <p class="title">{{ title }}</p>
-    </div>
-    <div class="star-center">
-        <div class="images">
-            <div class="item" 
-            v-for="(photo,i) in cover.split(',')" 
-            :key="i">
-                <img :src="photo">
+    <div class="star-card">
+        <div class="star-top">
+            <p class="title">{{ title }}</p>
+        </div>
+        <div class="star-center">
+            <div class="images">
+                <div class="item" 
+                v-for="(photo,i) in posters.split(',')" 
+                :key="i">
+                    <img :src="photo">
+                </div>
             </div>
         </div>
+        <div class="star-bottom">
+            <p class="details">
+                <span>{{ nickname }}</span>
+                <span>{{ size }} 跟帖</span>
+            </p>   
+        </div>
     </div>
-    <div class="star-bottom">
-        <p class="details">
-            <span>{{ nickname }}</span>
-            <span>{{ size }} 跟帖</span>
-        </p>   
-    </div>
-</div>
 </template>
 
 <script>
 export default {
-    props:['title','nickname','size','cover']
+    props:['title','nickname','size','posters']
 }
 </script>
 
