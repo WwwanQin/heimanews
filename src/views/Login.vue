@@ -58,7 +58,7 @@ export default {
                 data:this.user
             }).then(result => {
                 localStorage.setItem('news_User_Data',JSON.stringify(result.data.data));
-                this.$router.push(`/personalPage`)
+                this.$router.push(`/`)
             })
         },
         register(e){

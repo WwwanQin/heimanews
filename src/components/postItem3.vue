@@ -49,7 +49,7 @@ export default {
                     align-items: center;
                     width: 55/360*100vw;
                     height: 55/360*100vw;
-                    background: rgba(0, 0, 0, 0.5);
+                    background: rgba(197, 173, 173, 0.5);
                     border-radius: 50%;
                     position: absolute;
                     left: 50%;

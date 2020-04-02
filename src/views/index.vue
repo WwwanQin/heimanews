@@ -22,31 +22,37 @@
             <div class="tabs-left">
                 <van-tabs sticky swipeable v-model="active">
                     <!-- 设置分类标签选项 -->
-                    <van-tab v-for="(item,index) in categories" :key="index" :title="item" >
+                    <van-tab v-for="(item,index) in categories" :key="index" :title="item.name" >
                         <!-- 设置list内容 -->
                         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
                             <van-list
-                                v-model="loading"
-                                :finished="finished"
+                                v-model="categories[active].loading"
+                                :immediate-check="false"
+                                :finished="categories[active].finished"
                                 finished-text="没有更多了"
                                 @load="onLoad"
                             >
-                                <div v-for="(item,index) in list" :key="index">
-                                    <div v-if="item.cover.length == 1">
-                                        <postItem1
-                                        :title = "item.title"
-                                        :nickname = "item.user.nickname"
-                                        :size = "item.comment_length"
-                                        :url = "$axios.defaults.baseURL + item.cover[0].url"/>
-                                    </div>
-                                    <div v-else>
-                                        <postItem2
-                                        :title = "item.title"
-                                        :nickname = "item.user.nickname"
-                                        :size = "item.comment_length"
-                                        :posters="item.posters"
-                                        />
-                                    </div>
+                                <div v-for="(item,index) in categories[active].posts" :key="index">
+                                    <postItem1 
+                                    v-if="item.cover.length == 1 && item.type == 1"
+                                    :title = "item.title"
+                                    :nickname = "item.user.nickname"
+                                    :size = "item.comment_length"
+                                    :url = "$axios.defaults.baseURL + item.cover[0].url"/>
+                                    <postItem2
+                                    v-if="item.cover.length >= 3 && item.type == 1"
+                                    :title = "item.title"
+                                    :nickname = "item.user.nickname"
+                                    :size = "item.comment_length"
+                                    :posters="item.posters"
+                                    />
+                                    <postItem3
+                                    v-if="item.type == 2"
+                                    :title = "item.title"
+                                    :nickname = "item.user.nickname"
+                                    :size = "item.comment_length"
+                                    :url = "$axios.defaults.baseURL + item.cover[0].url"
+                                    />
                                 </div>
                             </van-list>
                         </van-pull-refresh>
@@ -64,83 +70,128 @@
 
 <script>
 import postItem1 from '@/components/postItem1'
-import postItem2 from '@/components/postItem2'        
+import postItem2 from '@/components/postItem2'
+import postItem3 from '@/components/postItem3'        
 export default {
     data(){
         return{
-            loading: false,
-            finished: false,
             refreshing: false,
-            pageIndex:0,
             pageSize:10,
-            list: [],
             active: 0,
-            categories: [
-                '推荐',
-                '热点',
-                '娱乐',
-                '科技',
-                '汽车',
-                '财经',
-                '军事',
-                '国际',
-                '时尚',
-                '历史',
-                '故事'
-            ],
+            categories: [],
+            categoryId: 999
+        }
+    },
+    mounted(){
+        let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+        let catgoerys = JSON.parse(localStorage.getItem('categorys'));
+        if(catgoerys){
+            if(catgoerys[0].name === '关注' && !token){
+                this.initCategorys(
+                    {
+                        url:`/category`,
+                        method:'get'
+                    }
+                ); 
+                return;
+            }
+            if(catgoerys[0].name !== '关注' && token){
+                this.initCategorys(
+                    {
+                        url:`/category`,
+                        method:'get',
+                        headers:{
+                            Authorization:token || ''
+                        },
+                    }
+                );  
+                return;
+            }
+            this.categories = catgoerys;
+            this.initPageIndex();
+            this.initData();
+        }else{
+            this.initCategorys(
+              {
+                url:`/category`,
+                method:'get',
+                headers:{
+                    Authorization:token || ''
+                },
+              }
+            );  
         }
     },
     methods:{
+        initCategorys(requestData){
+            this.$axios(requestData).then(res => {
+                let {data:{data}} = res;
+                this.categories = data;
+                localStorage.setItem('categorys',JSON.stringify(this.categories));
+                this.initPageIndex();
+                this.initData();
+            })
+        },
+        // 在tab栏中加入当前的页码，新闻列表，是否加载，加载完毕
+        initPageIndex(){
+            this.categories = this.categories.map(ele => {
+                ele.pageIndex = 1;
+                ele.posts = [];
+                ele.loading = false;
+                ele.finished = false;
+                return ele;
+            })
+        },
+        // 分页获取数据
         initData(){
-            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data'))
+            if(this.categories[this.active].finished) return;
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
             this.$axios({
-                url:`/post?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`,
+                url:`/post`,
                 method:'get',
+                params:{
+                    pageIndex: this.categories[this.active].pageIndex,
+                    pageSize: this.pageSize,
+                    category: this.categoryId
+                },
                 headers:{
-                    Authorization:token
+                    Authorization:token || ''
                 },
             }).then(res => {
-                let {data:{data}} = res;
+                let {data:{data,total}} = res;
                 data.forEach(ele => {
                     if(ele.cover.length == 3){
                         ele.posters = ele.cover.map(e => {
                             return this.$axios.defaults.baseURL + e.url;
                         }).toString()
                     }
-                    this.list.push(ele);
                 });
-            })    
+                this.categories[this.active].loading = false
+                this.categories[this.active].posts = [...this.categories[this.active].posts,...data];
+                this.categories = [...this.categories]
+                if (this.categories[this.active].posts.length >= total) {
+                    this.categories[this.active].finished = true;
+                }
+            })
         },
         onLoad() {
-            if (this.refreshing) {
-                this.list = [];
-                this.refreshing = false;
-            }
-            this.pageIndex ++;
+            this.categories[this.active].pageIndex ++;
             this.initData();
-            this.loading = false;
-            if (this.list.length >= 40) {
-                this.finished = true;
-            }
         },
         onRefresh() {
-            // 清空列表数据
-            this.finished = false;
-            this.pageIndex = 0;
-            // 重新加载数据
-            // 将 loading 设置为 true，表示处于加载状态
-            this.loading = true;
-            this.onLoad();
         }
     },
     watch:{
         active(){
-            console.log(1);
+            this.categoryId = this.categories[this.active].id;
+            this.pageIndex = 1;
+            this.initData();
         }
     },
     components:{
         postItem1,
-        postItem2
+        postItem2,
+        postItem3
     }
 }
 </script>
@@ -213,5 +264,11 @@ export default {
                 }
             }
         }
+    }
+    /deep/ .van-tabs__line{
+        display: none;
+    }
+    /deep/ .van-tab--active{
+        border-bottom: 2px #ff0000 solid;
     }
 </style>
