@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
+// 设置meta属性，meta中的authorization属性用于提示路由守卫来拦截本次路由分发
 const routes = [
   {
     path: '/',
@@ -57,6 +58,14 @@ const routes = [
       authorization: true
     },
     component: () => import('@/views/Star')
+  },
+  {
+    path: '/categorymanage',
+    name: 'categorymanage',
+    meta: {
+      authorization: true
+    },
+    component: () => import('@/views/Categorymanage')
   }
 ]
 

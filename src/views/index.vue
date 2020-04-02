@@ -57,7 +57,9 @@
             </div>
             <div class="tabs-right">
                 <div class="type-icon">
-                    <span class="iconfont iconjiantou"></span>
+                    <router-link to="/categorymanage">
+                        <span class="iconfont iconjiantou"></span>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -82,6 +84,7 @@ export default {
         let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
         let catgoerys = JSON.parse(localStorage.getItem('categorys'));
         if(catgoerys){
+            // 刚刚退出登录
             if(catgoerys[0].name === '关注' && !token){
                 this.initCategorys(
                     {
@@ -91,6 +94,7 @@ export default {
                 ); 
                 return;
             }
+            // 刚刚才登录
             if(catgoerys[0].name !== '关注' && token){
                 this.initCategorys(
                     {
@@ -107,6 +111,7 @@ export default {
             this.initPageIndex();
             this.initData();
         }else{
+            // 第一次进入
             this.initCategorys(
               {
                 url:`/category`,
@@ -119,6 +124,7 @@ export default {
         }
     },
     methods:{
+        // 初始化tab栏的内容
         initCategorys(requestData){
             this.$axios(requestData).then(res => {
                 let {data:{data}} = res;
@@ -165,6 +171,7 @@ export default {
                 this.categories[this.active].loading = false
                 this.categories[this.active].posts = [...this.categories[this.active].posts,...data];
                 this.categories = [...this.categories]
+                // 监听分页数据是否加载完毕
                 if (this.categories[this.active].posts.length >= total) {
                     this.categories[this.active].finished = true;
                 }
