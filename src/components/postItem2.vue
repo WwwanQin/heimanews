@@ -1,12 +1,12 @@
 <template>
     <div class="star-card">
         <div class="star-top">
-            <p class="title">{{ title }}</p>
+            <p class="title">{{ data.title }}</p>
         </div>
         <div class="star-center">
             <div class="images">
                 <div class="item" 
-                v-for="(photo,i) in posters.split(',')" 
+                v-for="(photo,i) in data.posters.split(',')" 
                 :key="i">
                     <img :src="photo">
                 </div>
@@ -14,8 +14,8 @@
         </div>
         <div class="star-bottom">
             <p class="details">
-                <span>{{ nickname }}</span>
-                <span>{{ size }} 跟帖</span>
+                <span>{{ data.user.nickname }}</span>
+                <span>{{ data.comment_length }} 跟帖</span>
             </p>   
         </div>
     </div>
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    props:['title','nickname','size','posters']
+    props:['title','nickname','size','posters','data']
 }
 </script>
 

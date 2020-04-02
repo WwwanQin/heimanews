@@ -1,16 +1,16 @@
 <template>
     <div class="star-item">
         <div class="star-left">
-            <p class="title">{{ title }}</p>
+            <p class="title">{{ data.title }}</p>
             <p class="details">
-                <span>{{ nickname }}</span>
-                <span>{{ size }} 跟帖</span>
+                <span>{{ data.user.nickname }}</span>
+                <span>{{ data.comment_length }} 跟帖</span>
             </p>
         </div>
         <div class="star-right">
             <div class="images">
                 <div class="item">
-                    <img :src="url">
+                    <img :src="$axios.defaults.baseURL + data.cover[0].url">
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-    props:['title','nickname','size','url']
+    props:['data']
 }
 </script>
 

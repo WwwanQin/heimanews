@@ -1,11 +1,11 @@
 <template>
     <div class="star-video">
         <div class="star-top">
-            <p class="title">{{ title }}</p>
+            <p class="title">{{ data.title }}</p>
         </div>
         <div class="star-center">
             <div class="video-poster">
-                <img :src="url">
+                <img :src="$axios.defaults.baseURL + data.cover[0].url">
                 <div class="video-start">
                     <span class="iconfont iconshipin"></span>
                 </div>
@@ -13,8 +13,8 @@
         </div>
         <div class="star-bottom">
             <p class="details">
-                <span>{{ nickname }}</span>
-                <span>{{ size }} 跟帖</span>
+                <span>{{ data.user.nickname }}</span>
+                <span>{{ data.comment_length }} 跟帖</span>
             </p>   
         </div>
     </div>
@@ -22,14 +22,14 @@
 
 <script>
 export default {
-    props:['title','nickname','size','url']
+    props:['data']
 }
 </script>
 
 <style scoped lang='less'>
     .star-video{
         .star-top{
-            padding: 5/360*100vw 13/360*100vw;
+            padding: 7/360*100vw 13/360*100vw;
         }
         .star-center{
             padding: 1.5vw 3.05555556vw;

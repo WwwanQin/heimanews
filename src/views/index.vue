@@ -33,26 +33,22 @@
                                 @load="onLoad"
                             >
                                 <div v-for="(item,index) in categories[active].posts" :key="index">
+                                    
                                     <postItem1 
                                     v-if="item.cover.length == 1 && item.type == 1"
-                                    :title = "item.title"
-                                    :nickname = "item.user.nickname"
-                                    :size = "item.comment_length"
-                                    :url = "$axios.defaults.baseURL + item.cover[0].url"/>
+                                    :data = "item"
+                                    />
+                                    
                                     <postItem2
                                     v-if="item.cover.length >= 3 && item.type == 1"
-                                    :title = "item.title"
-                                    :nickname = "item.user.nickname"
-                                    :size = "item.comment_length"
-                                    :posters="item.posters"
+                                    :data = "item"
                                     />
+
                                     <postItem3
                                     v-if="item.type == 2"
-                                    :title = "item.title"
-                                    :nickname = "item.user.nickname"
-                                    :size = "item.comment_length"
-                                    :url = "$axios.defaults.baseURL + item.cover[0].url"
+                                    :data = "item"
                                     />
+
                                 </div>
                             </van-list>
                         </van-pull-refresh>
