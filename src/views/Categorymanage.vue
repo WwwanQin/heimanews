@@ -112,6 +112,7 @@ export default {
             })
             let categorys = JSON.parse(localStorage.getItem('categorys'))
             categorys.push({
+                id:categorys.length+1,
                 name: labelName,
                 is_top: 0
             })

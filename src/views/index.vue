@@ -20,9 +20,11 @@
         </div>
         <div class="tabs">
             <div class="tabs-left">
-                <van-tabs sticky swipeable v-model="active">
+                <van-tabs sticky swipeable v-model="active" @scroll="scrollTop">
                     <!-- 设置分类标签选项 -->
-                    <van-tab v-for="(item,index) in categories" :key="index" :title="item.name" >
+                    <van-tab v-for="(item,index) in categories" 
+                    :key="index" 
+                    :title="item.name" >
                         <!-- 设置list内容 -->
                         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
                             <van-list
@@ -142,6 +144,7 @@ export default {
                 ele.posts = [];
                 ele.loading = false;
                 ele.finished = false;
+                ele.scrollTop = 0;
                 return ele;
             })
         },
@@ -182,15 +185,24 @@ export default {
             this.categories[this.active].pageIndex ++;
             this.initData();
         },
+        scrollTop({scrollTop}){
+            setTimeout(()=>{
+                if(this.categories[this.active]){
+                    this.categories[this.active].scrollTop = scrollTop;
+                }
+            },10)
+        },
         onRefresh() {
         }
     },
     watch:{
         active(){
-            this.categoryId = this.categories[this.active].id || 18;
-            console.log(this.categoryId);
+            this.categoryId = this.categories[this.active].id;
             this.pageIndex = 1;
             this.initData();
+            setTimeout(()=>{
+                document.documentElement.scrollTo(0,this.categories[this.active].scrollTop);
+            },10)
         }
     },
     components:{
