@@ -63,6 +63,16 @@ const routes = [
     path: '/categorymanage',
     name: 'categorymanage',
     component: () => import('@/views/Categorymanage')
+  },
+  {
+    path: '/newsarticledetail/:id',
+    name: 'newsarticledetail',
+    component: () => import('@/views/News_ArticleDetail')
+  },
+  {
+    path: '/newsvideodetail/:id',
+    name: 'newsvideodetail',
+    component: () => import('@/views/News_VideoDetail')
   }
 ]
 
@@ -74,7 +84,6 @@ const router = new VueRouter({
 // 设置路由守卫
 router.beforeEach((to,from,next)=>{
   const arr = JSON.parse(localStorage.getItem('news_User_Data')) || {};
-  console.log(to.name);
   if(to.meta.authorization){
     if(arr.token){
       next();
