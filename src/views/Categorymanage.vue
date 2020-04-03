@@ -7,7 +7,7 @@
             <div 
                 v-for="(item,index) in dels" 
                 :key="index" 
-                :class="item.active "
+                :class="item.className"
                 @click="bundleDel(index)">
                 {{ item.name }}
             </div>
@@ -19,7 +19,6 @@
             <div 
                 v-for="(item,index) in adds" 
                 :key="index" 
-                :class="item.active "
                 @click="bundleAdd(index)">
                 {{ item.name }}
             </div>
@@ -37,28 +36,23 @@ export default {
             adds:[
                 {
                     name: '社会',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '体育',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '游戏',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '旅游',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '探索',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '美食',
@@ -67,59 +61,77 @@ export default {
                 },
                 {
                     name: '育儿',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '养生',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 },
                 {
                     name: '美文',
-                    is_top: 0,
-                    active: ''
+                    is_top: 0
                 }
             ]
         }
     },
     methods:{
         bundleDel(index){
-            console.log(index);
-            this.dels.forEach(ele => ele.active = '')
-            this.dels[index].active = 'active';
+            let localCategorys = JSON.parse(localStorage.getItem('categorys')) || [];
+            let addCategorys = JSON.parse(localStorage.getItem('addCategorys')) || [];
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
             let labelName = this.dels[index].name;
+            if(token && labelName === '关注'){
+                return ;
+            }
+            localCategorys.splice(index,1);
             this.dels.splice(index,1);
             this.adds.push({
                 name: labelName,
                 is_top: 0,
                 active: ''
             })
-        },
-        bundleAdd(index){
-            this.adds.forEach(ele => ele.active = '')
-            this.adds[index].active = 'active';
-            let labelName = this.adds[index].name;
-            this.adds.splice(index,1);
-            this.dels.push({
+            addCategorys.push({
                 name: labelName,
                 is_top: 0,
                 active: ''
             })
+            localStorage.setItem('categorys',JSON.stringify(localCategorys));
+            localStorage.setItem('addCategorys',JSON.stringify(addCategorys))
+        },
+        bundleAdd(index){
+            let labelName = this.adds[index].name;
+            this.adds.splice(index,1);
+            let addCategorys = JSON.parse(localStorage.getItem('addCategorys'))
+            addCategorys.splice(index,1)
+            console.log(addCategorys);
+            localStorage.setItem('addCategorys',JSON.stringify(addCategorys));
+            this.dels.push({
+                name: labelName,
+                is_top: 0,
+                className: 'showDel'
+            })
+            let categorys = JSON.parse(localStorage.getItem('categorys'))
+            categorys.push({
+                name: labelName,
+                is_top: 0
+            })
+            localStorage.setItem('categorys',JSON.stringify(categorys))
         }
     },
     mounted(){
-        let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
-        this.$axios({
-            url:`/category`,
-            method:'get',
-            headers:{
-                Authorization:token || ''
-            },
-        }).then(res => {
-            let {data:{data}} = res;
-            this.dels = data.map(ele => {ele.active = ''; return ele})
-        })
+        let localCategorys = JSON.parse(localStorage.getItem('categorys')) || [];
+        let localAddCategory = JSON.parse(localStorage.getItem('addCategorys')) || this.adds
+        this.adds = localAddCategory;
+        localStorage.setItem('addCategorys',JSON.stringify(localAddCategory));
+        this.dels = localCategorys.map(e => {
+            if(e.name === '关注'){
+                e.className = 'active';
+            }else{
+                e.className = 'showDel';
+            }
+            return e
+        });
+        
     },
     components:{
         top
@@ -153,22 +165,22 @@ export default {
                 margin: 5 / 360 * 100vw 7/ 360 * 100vw;
                 position: relative;
             }
-            div::before{
+            div.showDel::before{
                 content: '×';
                 position: absolute;
-                width: 5.55555556vw;
-                height: 5.55555556vw;
+                width: 18 / 360 * 100vw;
+                height: 18 / 360 * 100vw;
                 border-radius: 50%;
                 background-color: red;
                 right: -10 / 360 * 100vw;
                 top: -10 / 360 * 100vw;
-                font-size: 22px;
-                line-height: 18 / 360 * 100vw;
+                font-size: 18px;
+                line-height: 16 / 360 * 100vw;
                 text-align: center;
                 color: white;
             }
             .active{
-                background: rgb(230, 223, 223);
+                background: rgb(243,243,243);
             }
         }
     }
@@ -192,9 +204,6 @@ export default {
                 -webkit-box-sizing: border-box;
                 box-sizing: border-box;
                 margin: 5/ 360 * 100vw 7/ 360 * 100vw;
-            }
-            .active{
-                background: rgb(230, 223, 223);
             }
         }
     }

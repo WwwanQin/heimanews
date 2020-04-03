@@ -132,6 +132,7 @@ export default {
                 localStorage.setItem('categorys',JSON.stringify(this.categories));
                 this.initPageIndex();
                 this.initData();
+                localStorage.removeItem('addCategorys');
             })
         },
         // 在tab栏中加入当前的页码，新闻列表，是否加载，加载完毕
@@ -186,7 +187,8 @@ export default {
     },
     watch:{
         active(){
-            this.categoryId = this.categories[this.active].id;
+            this.categoryId = this.categories[this.active].id || 18;
+            console.log(this.categoryId);
             this.pageIndex = 1;
             this.initData();
         }

@@ -62,9 +62,6 @@ const routes = [
   {
     path: '/categorymanage',
     name: 'categorymanage',
-    meta: {
-      authorization: true
-    },
     component: () => import('@/views/Categorymanage')
   }
 ]
