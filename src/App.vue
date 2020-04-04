@@ -9,6 +9,7 @@
 *{
   margin: 0;
   padding: 0;
+  filter: grayscale(.5);
 }
 .w{
   margin: 0 auto;

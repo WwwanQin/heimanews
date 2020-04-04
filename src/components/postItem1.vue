@@ -47,7 +47,7 @@ export default {
             padding-top: 10 / 360 * 100vw;
             display: flex;
             justify-content: space-between;
-            width: 55%;
+            width: 50%;
             span{
                 color: gray;
                 font-size: 13px;

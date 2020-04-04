@@ -80,6 +80,8 @@ export default {
             let addCategorys = JSON.parse(localStorage.getItem('addCategorys')) || [];
             let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
             let labelName = this.dels[index].name;
+            let id = this.dels[index].id;
+            console.log(id);
             if(token && labelName === '关注'){
                 return ;
             }
@@ -88,12 +90,14 @@ export default {
             this.adds.push({
                 name: labelName,
                 is_top: 0,
-                active: ''
+                active: '',
+                id: id
             })
             addCategorys.push({
                 name: labelName,
                 is_top: 0,
-                active: ''
+                active: '',
+                id: id
             })
             localStorage.setItem('categorys',JSON.stringify(localCategorys));
             localStorage.setItem('addCategorys',JSON.stringify(addCategorys))
@@ -102,19 +106,22 @@ export default {
             let labelName = this.adds[index].name;
             this.adds.splice(index,1);
             let addCategorys = JSON.parse(localStorage.getItem('addCategorys'))
+            let id = addCategorys[index].id
             addCategorys.splice(index,1)
             console.log(addCategorys);
             localStorage.setItem('addCategorys',JSON.stringify(addCategorys));
             this.dels.push({
                 name: labelName,
                 is_top: 0,
-                className: 'showDel'
+                className: 'showDel',
+                id: id
             })
             let categorys = JSON.parse(localStorage.getItem('categorys'))
             categorys.push({
                 id:categorys.length+1,
                 name: labelName,
-                is_top: 0
+                is_top: 0,
+                id: id
             })
             localStorage.setItem('categorys',JSON.stringify(categorys))
         }
