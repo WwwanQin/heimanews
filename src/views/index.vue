@@ -7,7 +7,7 @@
                 </router-link>
             </div>
             <div class="header-content">
-                <div class="header-search">
+                <div class="header-search" @click="$router.push('/search')">
                     <span class="iconfont iconsearch"></span>&nbsp;
                     <span>搜索新闻</span>
                 </div>

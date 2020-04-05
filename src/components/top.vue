@@ -20,7 +20,7 @@ export default {
     align-items: center;
     padding: 5 / 360 * 100vw;
     span{
-        font-size: 20 / 360 * 100vw;
+        font-size: 20px;
     }
 }
 </style>
