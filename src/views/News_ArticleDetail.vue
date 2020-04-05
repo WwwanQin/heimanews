@@ -27,7 +27,7 @@
         <div class="contentfooter">
             <div class="like">
                 <span class="iconfont icondianzan"></span>
-                <span class="linknum">{{ data.like_length }}</span>
+                <span class="linknum">{{ data.like_length ? data.like_length : 0}}</span>
             </div>
             <div class="wechat">
                 <span class="iconfont iconweixin"></span>
@@ -45,9 +45,9 @@
                         <div class="comment_top">
                             <div class="left">
                                 <div class="comment_detail">
-                                    <img :src="item.user.head_img ? $axios.defaults.baseURL + item.user.head_img : 'http://localhost:3000/uploads/image/IMG1574774541633.png'">
+                                    <img :src="item.user.head_img ? $axios.defaults.baseURL + item.user.head_img : 'http://192.168.0.104:3000/uploads/image/IMG1574774541633.png'">
                                     <div class="user_detail">
-                                        <div>{{ item.user.nickname }}</div>
+                                        <div style="font-size:15px;margin-top:7 / 360 * 100vw;color:gray">{{ item.user.nickname }}</div>
                                         <div style="font-size:13px;margin-top:7 / 360 * 100vw;color:gray">一小时前</div>
                                     </div>
                                 </div>
@@ -198,8 +198,8 @@ export default {
             border-bottom: 3px solid rgb(228, 228, 228);
             div{
                 border: 1px solid rgb(172, 172, 172);
-                width: 90 / 360 * 100vw;
-                height: 25 / 360 * 100vw;
+                width: 70 / 360 * 100vw;
+                height: 30 / 360 * 100vw;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -226,6 +226,7 @@ export default {
                 border-bottom: 2px solid rgb(228, 228, 228);
             }
             .comment{
+                margin-left: 10 / 360 * 100vw;
                 .comment_top{
                     display: flex;
                     .left{
@@ -233,8 +234,8 @@ export default {
                         .comment_detail{
                             display: flex;
                             img{
-                                width: 50px;
-                                height: 50px;
+                                width: 30 / 360 * 100vw;
+                                height: 30 / 360 * 100vw;
                                 object-fit: cover;
                                 border-radius: 50%;
                             }

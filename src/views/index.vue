@@ -147,12 +147,15 @@ export default {
                 ele.loading = false;
                 ele.finished = false;
                 ele.scrollTop = 0;
+                ele.isLoad = false;
                 return ele;
             })
         },
         // 分页获取数据
         initData(){
             if(this.categories[this.active].finished) return;
+            if(this.categories[this.active].isLoad) return;
+            this.categories[this.active].isLoad = true;
             let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
             this.$axios({
                 url:`/post`,
@@ -180,11 +183,14 @@ export default {
                 // 监听分页数据是否加载完毕
                 if (this.categories[this.active].posts.length >= total) {
                     this.categories[this.active].finished = true;
+                    this.categories[this.active].isLoad = true;
                 }
+                this.categories[this.active].isLoad = false;
+                this.categories[this.active].pageIndex ++;
             })
+            this.categories[this.active].isLoad = true;
         },
         onLoad() {
-            this.categories[this.active].pageIndex ++;
             this.initData();
         },
         scrollTop({scrollTop}){

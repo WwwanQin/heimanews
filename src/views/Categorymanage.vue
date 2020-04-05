@@ -82,7 +82,10 @@ export default {
             let labelName = this.dels[index].name;
             let id = this.dels[index].id;
             console.log(id);
-            if(token && labelName === '关注'){
+            if(token && (labelName === '关注' || labelName === '头条')){
+                return ;
+            }
+            if(!token && labelName === '头条'){
                 return ;
             }
             localCategorys.splice(index,1);
@@ -132,7 +135,7 @@ export default {
         this.adds = localAddCategory;
         localStorage.setItem('addCategorys',JSON.stringify(localAddCategory));
         this.dels = localCategorys.map(e => {
-            if(e.name === '关注'){
+            if(e.name === '关注' || e.name === '头条'){
                 e.className = 'active';
             }else{
                 e.className = 'showDel';

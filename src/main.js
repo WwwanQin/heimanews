@@ -3,7 +3,7 @@ import Vant, { Toast } from 'vant'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-const baseUrl = `http://localhost:3000`;
+const baseUrl = `http://192.168.0.104:3000`;
 const errorType = [200,400,401,403];
 axios.defaults.baseURL = baseUrl;
 Vue.prototype.$axios = axios
