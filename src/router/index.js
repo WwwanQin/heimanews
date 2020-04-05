@@ -73,6 +73,11 @@ const routes = [
     path: '/newsvideodetail/:id',
     name: 'newsvideodetail',
     component: () => import('@/views/News_VideoDetail')
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/Search')
   }
 ]
 
