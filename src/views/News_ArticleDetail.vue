@@ -7,7 +7,10 @@
                 <span class="iconfont iconnew"></span>
             </div>
             <div class="right">
-                <span :class="data.has_follow === true ? 'following' : 'nofollow' ">
+                <span 
+                :class="data.has_follow === true ? 'following' : 'nofollow' "
+                @click="bundleFollows"
+                >
                     {{ data.has_follow ===  true ? '已关注' : '关注' }}
                 </span>
             </div>
@@ -22,7 +25,8 @@
                 <span>{{ moment(create_date).format('YYYY-MM-DD') }}</span>
             </div>
         </div>
-        <div class="contentbody" >
+        <div class="contentbody">
+            <div v-html="data.content"></div>
         </div>
         <div class="contentfooter">
             <div class="like">
@@ -35,7 +39,7 @@
             </div>
         </div>
         <!-- 新闻评论 -->
-        <div class="postcomment">
+        <!-- <div class="postcomment">
             <h2>精彩跟帖</h2>
                 <div v-if = "comments.length > 0">
                     <div class="comment" 
@@ -69,12 +73,16 @@
                 <div v-else class="nocomment">
                     暂无跟帖，抢占沙发
                 </div>
-        </div>
+        </div> -->
+        <comment
+        :data="data"
+        @handlelike="checkLike"></comment>
     </div>
 </template>
 
 <script>
- import moment from 'moment'
+import moment from 'moment'
+import comment from '@/components/comment'
 export default {
     data(){
         return {
@@ -86,6 +94,28 @@ export default {
             data: {},
             comments: [],
             moment
+        }
+    },
+    methods:{
+        // 子组件调用的收藏文章
+        checkLike(){
+            this.data.has_like = !this.data.has_like;
+        },
+        // 绑定是否关注
+        bundleFollows(){
+            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
+            console.log(id);
+            let url = this.data.has_follow ? 'user_unfollow' : 'user_follows';
+            this.data.has_follow = !this.data.has_follow;
+            this.$axios({
+                url: `${url}/${this.data.user.id}`,
+                type: 'get',
+                headers: {
+                    Authorization: token
+                }
+            }).then(res => {
+                console.log(res);
+            })
         }
     },
     mounted(){
@@ -103,10 +133,6 @@ export default {
             this.data = data;
             this.nickname = data.user.nickname
             this.create_date = data.user.create_date;
-            document.querySelector('.contentbody').innerHTML = data.content
-            document.querySelectorAll('.contentbody>p>img').forEach(ele => {
-                ele.style.width = '100%'
-            })
         })
         // 查看文章评论
         this.$axios({
@@ -119,6 +145,9 @@ export default {
             let {data:{data}} = res
             this.comments = data;
         })
+    },
+    components:{
+        comment
     }
 }
 </script>
@@ -181,21 +210,19 @@ export default {
         }
         .contentbody{
             margin: 10 / 360 * 100vw;
-            p{
-                color: red;
-                img{
-                    width: 100%;
-                }
+            /deep/ img{
+                max-width: 100%;
             }
         }
         .contentfooter{
             margin: 10 / 360 * 100vw;
-            margin-top: 40 / 360 * 100vw;
+            margin-top: 20 / 360 * 100vw;
             display: flex;
             justify-content: space-evenly;
             align-items: center;
             padding-bottom: 5vw;
-            border-bottom: 3px solid rgb(228, 228, 228);
+            height: 100 / 360 * 100vw;
+            align-items: flex-start;
             div{
                 border: 1px solid rgb(172, 172, 172);
                 width: 70 / 360 * 100vw;
@@ -223,7 +250,6 @@ export default {
                 line-height: 80 / 360 * 100vw;
                 color: gray;
                 font-size: 18px;
-                border-bottom: 2px solid rgb(228, 228, 228);
             }
             .comment{
                 margin-left: 10 / 360 * 100vw;
@@ -257,7 +283,6 @@ export default {
                     font-size: 18px;
                 }
                 margin-bottom: 5vw;
-                border-bottom: 1px solid #e9e1e1;
             }
             .morecommen{
                 display: flex;

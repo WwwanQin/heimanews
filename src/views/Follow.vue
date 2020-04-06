@@ -90,12 +90,12 @@ export default {
         }
         .follow-text{
           text-align: center;
-          flex:  0 0 33%;
+          flex:  0 0 38%;
           p {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            width: 90 / 360 * 100vw;
+            width: 120 / 360 * 100vw;
             margin-left: 15 / 360 * 100vw;
           }
           :nth-child(1){
