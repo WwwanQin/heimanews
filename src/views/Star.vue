@@ -44,6 +44,13 @@ export default {
                 },
             }).then(res => {
                 let {data:{data}} = res
+                data.forEach(ele => {
+                    if(ele.cover.length == 3){
+                        ele.posters = ele.cover.map(e => {
+                            return this.$axios.defaults.baseURL + e.url;
+                        }).toString()
+                    }
+                });
                 this.stars = data
             })
         }

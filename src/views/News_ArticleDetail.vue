@@ -99,12 +99,29 @@ export default {
     methods:{
         // 子组件调用的收藏文章
         checkLike(){
-            this.data.has_like = !this.data.has_like;
+            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
+            this.data.has_star = !this.data.has_star;
+            this.$axios({
+                url: `post_star/${this.postId}`,
+                method: 'get',
+                headers: {
+                    Authorization: token
+                }
+            }).then(res => {
+                console.log(res);
+            })
         },
         // 绑定是否关注
         bundleFollows(){
-            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
-            console.log(id);
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
+            if(!token){
+                this.$router.push({
+                    path: '/login',
+                    query:{
+                        returnUrl: this.$route.fullPath
+                    }
+                });
+            }
             let url = this.data.has_follow ? 'user_unfollow' : 'user_follows';
             this.data.has_follow = !this.data.has_follow;
             this.$axios({

@@ -8,7 +8,7 @@
               <i>{{ data.comment_length }}</i>
           </span>
           <span class="iconfont iconshoucang"
-          :style="{color:(data.has_like ? 'red' : 'black')}"
+          :style="{color:(data.has_star ? 'red' : 'black')}"
           @click="checkLike">
           </span>
           <span class="iconfont iconfenxiang"></span>

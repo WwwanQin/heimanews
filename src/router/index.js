@@ -89,6 +89,7 @@ const router = new VueRouter({
 // 设置路由守卫
 router.beforeEach((to,from,next)=>{
   const arr = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+  let {returnUrl} = from.query
   if(to.meta.authorization){
     if(arr.token){
       next();
@@ -97,6 +98,9 @@ router.beforeEach((to,from,next)=>{
     }
   }else{
     next();
+  }
+  if(returnUrl){
+    next(returnUrl);
   }
 })
 
