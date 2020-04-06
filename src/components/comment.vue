@@ -65,12 +65,12 @@ export default {
                 i{
                     text-decoration: none;
                     position: absolute;
-                    width: 40 / 360 * 100vw;
+                    width: 35 / 360 * 100vw;
                     height: 20 / 360 * 100vw;
                     line-height: 20 / 360 * 100vw;
                     background-color: red;
-                    bottom: 18px;
-                    right: -18px;
+                    bottom: 15px;
+                    right: -22px;
                     border-radius: 10px;
                     font-size: medium;
                     text-align: center;
