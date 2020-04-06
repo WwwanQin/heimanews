@@ -57,7 +57,7 @@ export default {
         .details{
             display: flex;
             justify-content: space-between;
-            width: 32%;
+            width: 29%;
             span{
                 color: gray;
                 font-size: 13px;

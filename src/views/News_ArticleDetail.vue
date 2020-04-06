@@ -30,7 +30,7 @@
         </div>
         <div class="contentfooter">
             <div class="like">
-                <span class="iconfont icondianzan"></span>
+                <span class="iconfont icondianzan" @click="dianzan"></span>
                 <span class="linknum">{{ data.like_length ? data.like_length : 0}}</span>
             </div>
             <div class="wechat">
@@ -99,7 +99,16 @@ export default {
     methods:{
         // 子组件调用的收藏文章
         checkLike(){
-            let {token,user:{id}} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+            if(!token){
+                this.$router.push({
+                    path: '/login',
+                    query:{
+                        returnUrl: this.$route.fullPath
+                    }
+                });
+                // return;
+            }
             this.data.has_star = !this.data.has_star;
             this.$axios({
                 url: `post_star/${this.postId}`,
@@ -108,7 +117,8 @@ export default {
                     Authorization: token
                 }
             }).then(res => {
-                console.log(res);
+                let {data:{message}} = res;
+                this.$toast(message)
             })
         },
         // 绑定是否关注
@@ -121,6 +131,7 @@ export default {
                         returnUrl: this.$route.fullPath
                     }
                 });
+                // return;
             }
             let url = this.data.has_follow ? 'user_unfollow' : 'user_follows';
             this.data.has_follow = !this.data.has_follow;
@@ -131,7 +142,32 @@ export default {
                     Authorization: token
                 }
             }).then(res => {
-                console.log(res);
+                let {data:{message}} = res;
+                this.$toast(message)
+            })
+        },
+        // 点赞
+        dianzan(){
+            this.data.like_length = this.data.has_like ? this.data.like_length - 1: this.data.like_length + 1
+            this.data.has_like = !this.data.has_like;
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
+            if(!token){
+                this.$router.push({
+                    path: '/login',
+                    query:{
+                        returnUrl: this.$route.fullPath
+                    }
+                });
+            }
+            this.$axios({
+                url: `post_like/${this.postId}`,
+                method: 'get',
+                headers: {
+                    Authorization: token
+                }
+            }).then(res => {
+                let {data:{message}} = res;
+                this.$toast(message)
             })
         }
     },
