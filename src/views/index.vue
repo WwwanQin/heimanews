@@ -75,18 +75,20 @@ import postItem1 from '@/components/postItem1'
 import postItem2 from '@/components/postItem2'
 import postItem3 from '@/components/postItem3'        
 export default {
+    name:'index',
     data(){
         return{
             refreshing: false,
             pageSize:10,
             active: 0,
             categories: [],
-            categoryId: 999
+            categoryId: 0
         }
     },
     mounted(){
         let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
         let catgoerys = JSON.parse(localStorage.getItem('categorys'));
+        this.categoryId = catgoerys[0].id
         if(catgoerys){
             // 刚刚退出登录
             if(catgoerys[0].name === '关注' && !token){

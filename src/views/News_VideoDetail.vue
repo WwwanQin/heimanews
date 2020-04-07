@@ -2,9 +2,9 @@
     <div class="videodetail">
         <!-- 视频播放区域 -->
         <div class="videoLabel" @click="start">
-            <video ref="video">
-                <!-- $axios.defaults.baseURL + data.content -->
-                <source>
+            <video ref="video" 
+            :poster="`${$axios.defaults.baseURL}${post.cover[0].url}`" controls
+            :src="$axios.defaults.baseURL + data.content">
             </video>
             <div class="video-start" v-if="ifPause">
                 <span :class="pause"></span>
@@ -59,7 +59,10 @@ export default {
             ifPause: true,
             data: {},
             content: '  ',
-            nickname: '佚名'
+            nickname: '佚名',
+            post:{
+                cover:[{}]
+            }
         }
     },
     methods:{
@@ -160,10 +163,10 @@ export default {
             let {data:{data}} = res;
             this.data = data;
             this.content = data.content
-            this.nickname = data.user.nickname; 
-            console.log(this.$el);
-            let video = this.$refs.video
-            video.src = `${this.$axios.defaults.baseURL}${this.content}`
+            this.nickname = data.user.nickname;
+            this.post = data;
+            // let video = this.$refs.video
+            // video.src = `${this.$axios.defaults.baseURL}${this.content}`
         })
     },
     components:{

@@ -71,6 +71,7 @@ import postItem1 from '@/components/postItem1'
 import postItem2 from '@/components/postItem2'
 import postItem3 from '@/components/postItem3'
 export default {
+    name:'search',
     data(){
         return {
             hotWords: '通灵兽消失术',
@@ -129,6 +130,15 @@ export default {
         this.$refs.search.focus();
         let records = JSON.parse(localStorage.getItem('records')) || [];
         this.records = records;
+    },
+    beforeRouteEnter(to,from,next){
+        next(vm => {
+            if(from.path === '/'){
+                vm.value = '';
+                vm.clearResult = false;
+                vm.clearHistory = true;
+            }
+        })
     }
 }
 </script>
