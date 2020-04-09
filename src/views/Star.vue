@@ -63,9 +63,6 @@ export default {
     },
     mounted(){
         this.initData();
-        document.addEventListener('scroll',(eve)=>{
-            console.log(eve);
-        })
     }
 }
 </script>

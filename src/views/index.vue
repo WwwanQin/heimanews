@@ -85,7 +85,12 @@ export default {
             categoryId: 0
         }
     },
+    // 针对keep-alive组件，每次初始化组件都会执行这个生命函数
+    activated(){
+        console.log(123);
+    },
     mounted(){
+        console.log(123);
         let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
         let catgoerys = JSON.parse(localStorage.getItem('categorys'));
         this.categoryId = catgoerys[0].id

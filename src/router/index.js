@@ -78,6 +78,11 @@ const routes = [
     path: '/search',
     name: 'search',
     component: () => import('@/views/Search')
+  },
+  {
+    path: '/messagereply/:id',
+    name: 'messagereply',
+    component: () => import('@/views/MessageReply')
   }
 ]
 

@@ -1,10 +1,10 @@
 <template>
   <div class="comment">
       <div class="left-label">
-          <input type="text" placeholder="写跟帖">
+          <input type="button" value="写跟帖" @click="commentsPage">
       </div>
       <div class="right-label">
-          <span class="iconfont iconpinglun-">
+          <span class="iconfont iconpinglun-" @click="commentsPage">
               <i>{{ data.comment_length }}</i>
           </span>
           <span class="iconfont iconshoucang"
@@ -22,6 +22,9 @@ export default {
     methods:{
         checkLike(){
             this.$emit('handlelike')
+        },
+        commentsPage(){
+            this.$emit('handleComment');
         }
     }
 }
@@ -49,9 +52,8 @@ export default {
                 border: 0;
                 background: rgb(243, 243, 243);
                 border-radius: 50px;
-                padding-left: 20 / 360 * 100vw;
                 box-sizing: border-box;
-                color: black;
+                color: #898282;
             }
         }
         .right-label{

@@ -76,7 +76,8 @@
         </div> -->
         <comment
         :data="data"
-        @handlelike="checkLike"></comment>
+        @handlelike="checkLike"
+        @handleComment="commentsPage"></comment>
     </div>
 </template>
 
@@ -169,6 +170,10 @@ export default {
                 let {data:{message}} = res;
                 this.$toast(message)
             })
+        },
+        //进入到评论详情页面
+        commentsPage(){
+            this.$router.push(`/messagereply/${this.$route.params.id}`);
         }
     },
     mounted(){

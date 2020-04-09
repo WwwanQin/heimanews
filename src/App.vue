@@ -22,4 +22,7 @@ a{
   text-decoration: none;
   color: black;
 }
+img{
+  border-radius: 10px;
+}
 </style>
