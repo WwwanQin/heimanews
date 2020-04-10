@@ -38,42 +38,14 @@
                 <span class="wechatlink">微信</span>
             </div>
         </div>
-        <!-- 新闻评论 -->
-        <!-- <div class="postcomment">
-            <h2>精彩跟帖</h2>
-                <div v-if = "comments.length > 0">
-                    <div class="comment" 
-                    v-for="(item,index) in comments" 
-                    :key = "index" 
-                    >
-                        <div class="comment_top">
-                            <div class="left">
-                                <div class="comment_detail">
-                                    <img :src="item.user.head_img ? $axios.defaults.baseURL + item.user.head_img : 'http://192.168.0.104:3000/uploads/image/IMG1574774541633.png'">
-                                    <div class="user_detail">
-                                        <div style="font-size:15px;margin-top:7 / 360 * 100vw;color:gray">{{ item.user.nickname }}</div>
-                                        <div style="font-size:13px;margin-top:7 / 360 * 100vw;color:gray">一小时前</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="right" style="font-size:13px;margin-top:7 / 360 * 100vw;color:gray">
-                                回复
-                            </div>
-                        </div>
-                        <div class="comment_body">
-                            {{ item.content }}
-                        </div>
-                    </div>
-                    <div class="morecommen">
-                        <div>
-                            更多跟帖
-                        </div>
-                    </div>
+        <!-- 展示图片遮罩层 -->
+        <van-overlay :show="show" @click="show = false">
+            <div class="wrapper" >
+                <div class="block">
+                    <img :src="overlayImg">
                 </div>
-                <div v-else class="nocomment">
-                    暂无跟帖，抢占沙发
-                </div>
-        </div> -->
+            </div>
+        </van-overlay>
         <comment
         :data="data"
         @handlelike="checkLike"
@@ -87,6 +59,8 @@ import comment from '@/components/comment'
 export default {
     data(){
         return {
+            overlayImg: `${this.$axios.defaults.baseURL + '/uploads/image/IMG1574774541633.png'}`,
+            show:false,
             postId: '',
             follow: true,
             bodyClassName: '',
@@ -191,17 +165,14 @@ export default {
             this.data = data;
             this.nickname = data.user.nickname
             this.create_date = data.user.create_date;
-        })
-        // 查看文章评论
-        this.$axios({
-            url: `/post_comment/${this.postId}`,
-            method: 'get',
-            headers:{
-                Authorization:token || ''
-            }
-        }).then(res => {
-            let {data:{data}} = res
-            this.comments = data;
+            setTimeout(() => {
+                document.querySelectorAll('img').forEach(ele => {
+                    ele.addEventListener('click',()=>{
+                        this.show = true;
+                        this.overlayImg = ele.src;
+                    })
+                })
+            },100)
         })
     },
     components:{
@@ -212,6 +183,22 @@ export default {
 
 <style lang="less" scoped>
     .newsdetail{
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .block {
+            max-width: 380px;
+            max-height: 200px;
+            margin: 0 auto;
+            img{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
         margin: 4.16666667vw;
         .toplabel{
             display: flex;

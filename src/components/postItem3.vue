@@ -71,7 +71,7 @@ export default {
                 width: 32%;
                 span{
                     color: gray;
-                    font-size: 13px;
+                    font-size: 11 / 360 * 100vw;
                 }
             }
         }

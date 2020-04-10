@@ -23,6 +23,7 @@ a{
   color: black;
 }
 img{
-  border-radius: 10px;
+  border-radius: 5px;
+  box-shadow: rgba(49, 35, 35, 0.16) 7px 8px 10px
 }
 </style>

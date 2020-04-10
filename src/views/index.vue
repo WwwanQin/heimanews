@@ -90,10 +90,9 @@ export default {
         console.log(123);
     },
     mounted(){
-        console.log(123);
         let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
         let catgoerys = JSON.parse(localStorage.getItem('categorys'));
-        this.categoryId = catgoerys[0].id
+        // if (catgoerys) this.categoryId = catgoerys[0].i
         if(catgoerys){
             // 刚刚退出登录
             if(catgoerys[0].name === '关注' && !token){

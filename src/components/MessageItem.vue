@@ -4,13 +4,16 @@
         <div class="detail">
             <div class="nickanme">{{ data.user.nickname }}</div>
             <div class="data">{{ moment(data.create_date).fromNow() }}</div>
-            <div class="huifu">回复</div>
+            <div class="huifu"  @click="childReply(data)">回复</div>
         </div>
         <div class="content">
             {{ data.content }}
         </div>
-        <div v-if="data && data.parent">
-            <messageReply :data="data.parent"></messageReply>
+        <div v-if="data.parent">
+            <messageReply 
+            :data="data.parent"
+            @handleReply="childReply">
+            </messageReply>
         </div>
       </div>
   </div>
@@ -22,6 +25,11 @@ export default {
     data(){
         return{
             moment
+        }
+    },
+    methods:{
+        childReply(data){
+            this.$emit('handleReply',data);
         }
     },
     name: 'messageReply',

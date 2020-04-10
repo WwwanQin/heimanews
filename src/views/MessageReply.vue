@@ -25,20 +25,21 @@
                                 <p>{{ item.user.nickname }}
                                     <span class="iconfont iconnew" style="font-size: 25px;color: red;"></span>
                                 </p>
-                                <em>{{ moment(item.user.create_date).format('YYYY-MM-DD HH:SS') }}</em>
-                                <em>{{ moment(item.user.create_date).fromNow() }}</em>
+                                <em>{{ moment(item.create_date).format('YYYY-MM-DD HH:SS') }}</em>
+                                <em>{{ moment(item.create_date).fromNow() }}</em>
                             </div>
                         </div>
-                        <div class="item_right">
+                        <div class="item_right" @click="reply(item)">
                             回复
                         </div>
                     </div>
                     <div class="messageContent">
-                        <messagereply
+                        <MessageItem
                         v-if="item.parent"
-                        :data="item.parent">
-                        </messagereply>
-                            {{ item.content }}
+                        :data="item.parent"
+                        @handleReply="reply">
+                        </MessageItem>
+                        {{ item.content }}
                     </div>
                 </div>
             </van-list>
@@ -46,36 +47,42 @@
                 暂无跟帖，抢占沙发 (〜￣△￣)〜
             </div>
         </div>
-        <!-- 回复消息 -->
+        <!-- 消息回复框 -->
         <div class="replyMessage">
             <van-field
             v-model="message"
-            rows="1"
+            rows="2"
             autosize
             type="textarea"
             maxlength="50"
-            placeholder="请输入留言"
+            :placeholder=checkplaceholder
             show-word-limit
             class="vanfidld1"
             v-if="!focus"
             />
-            <span>发送</span>
+            <div class="replyRight">
+                <span @click="sendComment">发送</span>
+                <span @click="clearComment">清除</span>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import messagereply from '@/components/MessageItem'
+import MessageItem from '@/components/MessageItem'
 import top from '@/components/top'
 import moment from 'moment'
 moment.locale('zh-CN');
 export default {
     data(){
         return {
-            loading:false,
-            finished:false,
-            messages:[],
-            message:'',
+            checkplaceholder:'发表评论 (@某人时需要在@符号后接一个空格，举个栗子 @ 新闻小管家 )',
+            postId: '',
+            parentId: '',
+            loading: false,
+            finished: false,
+            messages: [],
+            message: '',
             pageSize: 5,
             pageIndex: 1,
             focus: false,
@@ -83,15 +90,69 @@ export default {
         }
     },
     components:{
-        messagereply,
+        MessageItem,
         top
     },
     methods:{
+        // 清除所有消息
+        clearComment(){
+            this.checkplaceholder = '发表评论 (@某人时需要在@符号后接一个空格，举个栗子 @ 新闻小管家 )';
+            this.message = '';
+            this.parentId = undefined;
+        },
+        // 绑定第一个遍历的子组件的回复事件
+        reply(item){
+            this.checkplaceholder = `@${item.user.nickname}`
+            this.parentId = item.id;
+        },
+        // 发送评论
+        sendComment(){
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+            if(!token){
+                this.$router.push({
+                    path: '/login',
+                    query:{
+                        returnUrl: this.$route.fullPath
+                    }
+                });
+            }
+            let parentId = this.parentId || undefined
+            let content = this.message;
+            let create_date = new Date();
+            this.sendCommentToServe(
+                {
+                    content: content,
+                    parent_id: parentId || undefined
+                }
+            );
+            this.message = '';
+        },
+        // 评论发送到后台
+        sendCommentToServe(params){
+            let { token } = JSON.parse(localStorage.getItem('news_User_Data'));
+            this.$axios({
+                url: `/post_comment/${this.$route.params.id}`,
+                method: 'post',
+                data: params,
+                headers:{
+                    Authorization:token || ''
+                },
+            }).then(res => {
+                this.$toast.success('评论成功');
+                this.loading= false,
+                this.finished= false,
+                this.messages = [];
+                this.pageIndex = 1;
+                this.getList();
+            })
+        },
+        // 列表组件下拉事件
         onLoad(){
             this.pageIndex ++ ;
             this.loading = false;
             this.getList();
         },
+        // 分页获取评论数据
         getList(){
             this.$axios({
                 url: `/post_comment/${this.$route.params.id}`,
@@ -111,6 +172,7 @@ export default {
         }
     },
     mounted(){
+        this.postId = this.$route.params.id;
         this.getList();
     }
 }
@@ -121,8 +183,8 @@ export default {
         margin: 13 / 360 * 100vw;
         .moments{
             margin-top: 20 / 360 * 100vw;
+            margin-bottom: 120 / 360 * 100vw;
             .messageItem{
-                background: floralwhite;
                 border-radius: 10 / 360 * 100vw; 
                 padding: 5 / 360 * 100vw; 
                 margin-bottom:10 / 360 * 100vw;
@@ -177,7 +239,6 @@ export default {
                 font-size: 16px;
                 font-weight: 500;
                 color: gray;
-                background: floralwhite;
                 border-radius: 2.77777778vw;
                 padding: 1.38888889vw;
                 margin-bottom: 2.77777778vw;
@@ -190,7 +251,7 @@ export default {
             position: fixed;
             bottom: 0;
             width: 100%;
-            background: floralwhite;
+            background: white;
             margin-left: -12 / 360 * 100vw;
             display: flex;
             justify-content: center;
@@ -208,6 +269,14 @@ export default {
                 flex: 0 0 15%;
                 text-align: center;
                 color: gray;
+            }
+            .replyRight{
+                display: flex;
+                justify-content: space-evenly;
+                flex-direction: column;
+                height: 88px;
+                width: 70px;
+                align-items: center;
             }
         }
     }
