@@ -15,7 +15,7 @@
             <div class="leftLabel">
                 <div class="authorMessage">
                     <div class="headIcon">
-                        <img src="http://192.168.0.104:3000/uploads/image/IMG1574778154464.jpeg">
+                        <img :src="`${$axios.defaults.baseURL}/uploads/image/IMG1574778154464.jpeg`">
                     </div>
                     <div class="authorName">
                         {{ nickname }}
@@ -45,7 +45,8 @@
         </div>
         <comment
         :data="data"
-        @handlelike="checkLike"></comment>
+        @handlelike="checkLike"
+        @handleComment="commentsPage"></comment>
     </div>
 </template>
 
@@ -98,6 +99,10 @@ export default {
                 let {data:{message}} = res;
                 this.$toast(message)
             })
+        },
+        //进入到评论详情页面
+        commentsPage(){
+            this.$router.push(`/messagereply/${this.$route.params.id}`);
         },
         // 绑定是否关注
         bundleFollows(){

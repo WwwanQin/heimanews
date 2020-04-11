@@ -22,19 +22,19 @@
             <div class="tabs-left">
                 <van-tabs sticky swipeable v-model="active" @scroll="scrollTop">
                     <!-- 设置分类标签选项 -->
-                    <van-tab v-for="(item,index) in categories" 
+                    <van-tab v-for="(item,index) in categorys" 
                     :key="index" 
                     :title="item.name" >
                         <!-- 设置list内容 -->
                         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
                             <van-list
-                                v-model="categories[active].loading"
+                                v-model="categorys[active].loading"
                                 :immediate-check="false"
-                                :finished="categories[active].finished"
+                                :finished="categorys[active].finished"
                                 finished-text="没有更多了"
                                 @load="onLoad"
                             >
-                                <div v-for="(item,index) in categories[active].posts" :key="index">
+                                <div v-for="(item,index) in categorys[active].posts" :key="index">
                                     <postItem1 
                                     v-if="item.cover.length == 1 && item.type == 1"
                                     :data = "item"
@@ -79,67 +79,70 @@ export default {
     data(){
         return{
             refreshing: false,
-            pageSize:10,
+            pageSize:6,
             active: 0,
-            categories: [],
+            categorys: [],
             categoryId: 0
         }
     },
     // 针对keep-alive组件，每次初始化组件都会执行这个生命函数
     activated(){
-        console.log(123);
     },
     mounted(){
-        let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
-        let catgoerys = JSON.parse(localStorage.getItem('categorys'));
-        // if (catgoerys) this.categoryId = catgoerys[0].i
-        if(catgoerys){
-            // 刚刚退出登录
-            if(catgoerys[0].name === '关注' && !token){
-                this.initCategorys(
-                    {
-                        url:`/category`,
-                        method:'get'
-                    }
-                ); 
-                return;
-            }
-            // 刚刚才登录
-            if(catgoerys[0].name !== '关注' && token){
-                this.initCategorys(
-                    {
-                        url:`/category`,
-                        method:'get',
-                        headers:{
-                            Authorization:token || ''
-                        },
-                    }
-                );  
-                return;
-            }
-            this.categories = catgoerys;
-            this.initPageIndex();
-            this.initData();
-        }else{
-            // 第一次进入
-            this.initCategorys(
-              {
-                url:`/category`,
-                method:'get',
-                headers:{
-                    Authorization:token || ''
-                },
-              }
-            );  
-        }
+        this.reload();
     },
     methods:{
+        // 加载方法
+        reload(){
+            let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {};
+            let catgoerys = JSON.parse(localStorage.getItem('categorys'));
+            // if (catgoerys) this.categoryId = catgoerys[0].i
+            if(catgoerys){
+                // 刚刚退出登录
+                if(catgoerys[0].name === '关注' && !token){
+                    this.initCategorys(
+                        {
+                            url:`/category`,
+                            method:'get'
+                        }
+                    ); 
+                    return;
+                }
+                // 刚刚才登录
+                if(catgoerys[0].name !== '关注' && token){
+                    this.initCategorys(
+                        {
+                            url:`/category`,
+                            method:'get',
+                            headers:{
+                                Authorization:token || ''
+                            },
+                        }
+                    );  
+                    return;
+                }
+                this.categorys = catgoerys;
+                this.initPageIndex();
+                this.initData();
+            }else{
+                // 第一次进入
+                this.initCategorys(
+                {
+                    url:`/category`,
+                    method:'get',
+                    headers:{
+                        Authorization:token || ''
+                    },
+                }
+                );  
+            }
+        },
         // 初始化tab栏的内容
         initCategorys(requestData){
             this.$axios(requestData).then(res => {
                 let {data:{data}} = res;
-                this.categories = data;
-                localStorage.setItem('categorys',JSON.stringify(this.categories));
+                this.categorys = data;
+                localStorage.setItem('categorys',JSON.stringify(this.categorys));
                 this.initPageIndex();
                 this.initData();
                 localStorage.removeItem('addCategorys');
@@ -147,7 +150,7 @@ export default {
         },
         // 在tab栏中加入当前的页码，新闻列表，是否加载，加载完毕
         initPageIndex(){
-            this.categories = this.categories.map(ele => {
+            this.categorys = this.categorys.map(ele => {
                 ele.pageIndex = 1;
                 ele.posts = [];
                 ele.loading = false;
@@ -159,15 +162,15 @@ export default {
         },
         // 分页获取数据
         initData(){
-            if(this.categories[this.active].finished) return;
-            if(this.categories[this.active].isLoad) return;
-            this.categories[this.active].isLoad = true;
+            if(this.categorys[this.active].finished) return;
+            if(this.categorys[this.active].isLoad) return;
+            this.categorys[this.active].isLoad = true;
             let {token} = JSON.parse(localStorage.getItem('news_User_Data')) || {}
             this.$axios({
                 url:`/post`,
                 method:'get',
                 params:{
-                    pageIndex: this.categories[this.active].pageIndex,
+                    pageIndex: this.categorys[this.active].pageIndex,
                     pageSize: this.pageSize,
                     category: this.categoryId
                 },
@@ -176,6 +179,9 @@ export default {
                 },
             }).then(res => {
                 let {data:{data,total}} = res;
+                if (data.length == 0){
+                    return;
+                }
                 data.forEach(ele => {
                     if(ele.cover.length == 3){
                         ele.posters = ele.cover.map(e => {
@@ -183,39 +189,44 @@ export default {
                         }).toString()
                     }
                 });
-                this.categories[this.active].loading = false
-                this.categories[this.active].posts = [...this.categories[this.active].posts,...data];
-                this.categories = [...this.categories]
+                this.categorys[this.active].loading = false
+                this.categorys[this.active].posts = [...this.categorys[this.active].posts,...data];
+                this.categorys = [...this.categorys]
                 // 监听分页数据是否加载完毕
-                if (this.categories[this.active].posts.length >= total) {
-                    this.categories[this.active].finished = true;
-                    this.categories[this.active].isLoad = true;
+                if (this.categorys[this.active].posts.length >= total) {
+                    this.categorys[this.active].finished = true;
+                    this.categorys[this.active].isLoad = true;
                 }
-                this.categories[this.active].isLoad = false;
-                this.categories[this.active].pageIndex ++;
+                this.refreshing = false;
+                this.categorys[this.active].isLoad = false;
+                this.categorys[this.active].pageIndex ++;
             })
-            this.categories[this.active].isLoad = true;
+            this.categorys[this.active].isLoad = true;
         },
         onLoad() {
             this.initData();
         },
         scrollTop({scrollTop}){
             setTimeout(()=>{
-                if(this.categories[this.active]){
-                    this.categories[this.active].scrollTop = scrollTop;
+                if(this.categorys[this.active]){
+                    this.categorys[this.active].scrollTop = scrollTop;
                 }
             },10)
         },
         onRefresh() {
+            this.categorys[this.active].pageIndex = 1
+            this.categorys[this.active].finished = false;
+            this.categorys[this.active].posts = [];
+            this.initData();
         }
     },
     watch:{
         active(){
-            this.categoryId = this.categories[this.active].id;
+            this.categoryId = this.categorys[this.active].id;
             this.pageIndex = 1;
             this.initData();
             setTimeout(()=>{
-                document.documentElement.scrollTo(0,this.categories[this.active].scrollTop);
+                document.documentElement.scrollTo(0,this.categorys[this.active].scrollTop);
             },10)
         }
     },
@@ -223,6 +234,15 @@ export default {
         postItem1,
         postItem2,
         postItem3
+    },
+    beforeRouteEnter(to,from,next){
+        next(vm => {
+            if(from && (from.path == '/categorymanage'
+            || from.path == '/personalPage'
+            || from.path == '/login')){
+                vm.reload();
+            }
+        })
     }
 }
 </script>

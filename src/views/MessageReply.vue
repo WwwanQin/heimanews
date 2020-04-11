@@ -76,7 +76,7 @@ moment.locale('zh-CN');
 export default {
     data(){
         return {
-            checkplaceholder:'发表评论 (@某人时需要在@符号后接一个空格，举个栗子 @ 新闻小管家 )',
+            checkplaceholder:'发表评论',
             postId: '',
             parentId: '',
             loading: false,
@@ -96,7 +96,7 @@ export default {
     methods:{
         // 清除所有消息
         clearComment(){
-            this.checkplaceholder = '发表评论 (@某人时需要在@符号后接一个空格，举个栗子 @ 新闻小管家 )';
+            this.checkplaceholder = '发表评论';
             this.message = '';
             this.parentId = undefined;
         },
@@ -129,7 +129,7 @@ export default {
         },
         // 评论发送到后台
         sendCommentToServe(params){
-            let { token } = JSON.parse(localStorage.getItem('news_User_Data'));
+            let { token } = JSON.parse(localStorage.getItem('news_User_Data')) || {};
             this.$axios({
                 url: `/post_comment/${this.$route.params.id}`,
                 method: 'post',

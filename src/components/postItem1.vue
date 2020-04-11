@@ -10,7 +10,12 @@
         <div class="star-right">
             <div class="images">
                 <div class="item">
-                    <img :src="$axios.defaults.baseURL + data.cover[0].url">
+                    <!-- <img :src="$axios.defaults.baseURL + data.cover[0].url"> -->
+                    <van-image :src="$axios.defaults.baseURL + data.cover[0].url">
+                        <template v-slot:loading>
+                            <van-loading type="spinner" size="20" />
+                        </template>
+                    </van-image>
                 </div>
             </div>
         </div>
@@ -58,12 +63,14 @@ export default {
         flex: 1;
         .images{
             .item{
-                width: 140/360 * 100vw;
-                text-align: center;
-                img{
-                    width: 95%;
-                    max-height: 80 / 360 * 100vw;
-                    object-fit: cover;
+                /deep/ .van-image{
+                    width: 140/360 * 100vw;
+                    text-align: center;
+                    img{
+                        width: 95%;
+                        max-height: 80 / 360 * 100vw;
+                        object-fit: cover;
+                    }
                 }
             }
         } 

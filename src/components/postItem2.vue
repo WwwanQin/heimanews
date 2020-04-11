@@ -8,7 +8,11 @@
                 <div class="item" 
                 v-for="(photo,i) in data.posters.split(',')" 
                 :key="i">
-                    <img :src="photo">
+                    <van-image :src="$axios.defaults.baseURL + data.cover[0].url">
+                        <template v-slot:loading>
+                            <van-loading type="spinner" size="20" />
+                        </template>
+                    </van-image>
                 </div>
             </div>
         </div>
@@ -42,11 +46,13 @@ export default {
             -ms-flex-pack: space-evenly;
             justify-content: space-evenly;
             .item{
-                flex: 0 0 33%;
-                img{
-                    width: 98%;
-                    height: 65/360*100vw;
-                    object-fit: cover;
+                /deep/ .van-image{
+                    flex: 0 0 33%;
+                    img{
+                        width: 98%;
+                        height: 65/360*100vw;
+                        object-fit: cover;
+                    }
                 }
             }
         }
